@@ -28,7 +28,7 @@ end
 ---@param file_path string
 ---@return boolean
 function NeotestAdapter.is_test_file(file_path)
-  return vim.endswith(file_path, "_spec.rb")
+  return vim.endswith(file_path, "_test.rb")
 end
 
 ---Filter directories when searching for test files
@@ -113,22 +113,11 @@ function NeotestAdapter.build_spec(args)
   local formatter_path = get_formatter_path()
   local formatter = config.formatter()
 
-  local script_args = {
-    "-f",
-    formatter,
-    "-o",
-    results_path,
-    "-f",
-    "progress",
-  }
+  local script_args = {}
 
-  if formatter == "NeotestFormatter" then
-    script_args = vim.tbl_flatten({
-      "--require",
-      formatter_path,
-      script_args,
-    })
-  end
+  if formatter == "NeotestFormatter" then script_args = vim.tbl_flatten({
+    script_args,
+  }) end
 
   local function run_by_filename()
     table.insert(script_args, spec_path)
